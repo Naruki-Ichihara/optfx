@@ -21,9 +21,13 @@ def test_adjoint(): # In-progress
     dx = ufl.Measure("dx", metadata={"quadrature_degree": 4})
     comm = MPI.COMM_WORLD
     test_domain = mesh.create_unit_square(comm, 100, 100, mesh.CellType.quadrilateral)
+    sample = np.random.rand(10201)*10
     V = FunctionSpace(test_domain, ("Lagrange", 1))
     u = Function(V)
-    u.vector.array = 0.3846
-    f = ufl.dot(u, u)*dx
+    u.interpolate(fem.Constant(test_domain, 1.0))
+    f = 0.5*u*u*dx
     df = fx.compute_sensitivities(f, u)
-    print(type(df))
+    print(fx.to_numpy(u))
+    print(fx.to_numpy(df))
+
+test_adjoint()

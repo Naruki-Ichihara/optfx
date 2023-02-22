@@ -22,7 +22,6 @@ def to_numpy(fenics_var: fem.Constant | fem.Function) -> np.ndarray:
         return np.asarray(fenics_var.value)
     if isinstance(fenics_var, fem.Function):
         fenics_vec = fenics_var.vector
-        data = fenics_vec
         return fenics_vec.getArray()
     raise ValueError("Cannot convert " + str(type(fenics_var)))
 

@@ -39,7 +39,7 @@ f = fem.Function(V)
 f.interpolate(lambda x: x[0]*0+1)
 source = fem.Constant(mesh, -6.0)
 
-class Poisson(fx.FX):
+class Poisson(fx.Module):
     def problem(self, controls):
         rho = controls[0]
         a = ufl.dot(ufl.grad(u), ufl.grad(v))*rho**3 * ufl.dx
@@ -53,6 +53,14 @@ class Poisson(fx.FX):
         return self.volume
     
 poisson = Poisson()
-print(poisson.forward([f]))
-print(poisson.backward_objective(wrt=[0]))
-print(poisson.backward_constraint('constraint_volume', wrt=[0]))
+N = f.vector.size
+min_bounds = np.zeros(N)
+max_bounds = np.ones(N)
+setting = {'set_lower_bounds': min_bounds,
+           'set_upper_bounds': max_bounds,
+           'set_maxeval': 10
+          }
+params = {'verbosity': 5}
+
+test = fx.opt(poisson, [f], [0], setting, params)
+print(test)

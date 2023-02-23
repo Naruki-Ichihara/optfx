@@ -5,4 +5,5 @@ __version__ = "0.0.0.alpha"
 
 from .utils import from_numpy, to_numpy
 from .adjoint import compute_sensitivities
-from .abstract import FX
+from .abstract import Module
+from .optimizer import opt
